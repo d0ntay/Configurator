@@ -1,0 +1,14 @@
+{{define "title"}}Result{{end}}
+{{define "main"}}
+<div class="container">
+    <h1>Generated Config</h1>
+    <form method="post" action="/download">
+        <input type="hidden" name="config" value="{{.Config}}">
+        <input type="hidden" name="filename" value="{{.FileName}}">
+        <button type="submit" class="download-btn">Download {{.FileName}}</button>
+    </form>
+    <div class="config-box">
+        <pre>{{.Config | html}}</pre>
+    </div>
+</div>
+{{end}}

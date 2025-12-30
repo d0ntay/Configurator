@@ -1,0 +1,11 @@
+{{define "title"}}Home{{end}}
+{{define "main"}}
+    <div class="container">
+        <h1>Available Configs</h1>
+        <ul>
+            {{range .Templates}}
+                <li><a href="/config/{{.Name}}">{{.Name}}</a></li>
+            {{end}}
+        </ul>
+    </div>
+{{end}}

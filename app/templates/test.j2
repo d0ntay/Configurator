@@ -1,0 +1,238 @@
+{#- 1: host_name: Lower case acad (site) ID CNF/POP - eg - wndy-vtx-pe1-r: [-a-z0-9]+-r -#}
+{#- 2: loopback: Loopback IP eg - 192.168.1.2: (\d{1,3}\.){3}\d{1,3} -#}
+{#- 3: MCPE: (3093 = ODD Node) (3094 = EVEN Node) eg - 3093: 3093|3094 -#}
+{#- 4: MCPE_Gateway: Gateway Address assigned to CNF pop eg - 192.168.1.2: (\d{1,3}\.){3}\d{1,3} -#}
+{#- 5: fxp0_Mgnt_IP: Out of Band management address eg - 192.168.1.2: (\d{1,3}\.){3}\d{1,3} -#}
+{#- 6: isis_NSAP: Reference Vortex Logical Design documentation for more detailed explanation eg - 49.0001.0102.4900.0001.00: 49(\.[0-9A-Fa-f]{2,4})+\.00 -#}
+{#- 7: VTX_MGMT: (3095 = ODD) (3096 = EVEN) eg - 3095: 3095|3096 -#}
+{#- 8: Local_Vortex_MGNT_IP: vortex in-band management address eg - 192.168.1.2: (\d{1,3}\.){3}\d{1,3} -#}
+{#- 9: Segment_Index: Segment Routing Index number -#}
+{#- 10: Root_Password: Root Password for local root account -#}
+{#- 11: Tacacs_Password: TACACS passwords -#}
+{#- 12: BGP_MCPE_Password: BGP secure connection password -#}
+set system host-name {{host_name}}
+set system root-authentication encrypted-password {{Root_Password}}
+set system management-instance
+set chassis aggregated-devices ethernet device-count 10
+set chassis network-services enhanced-ip
+set system max-configurations-on-flash 20
+set system max-configuration-rollbacks 49
+set chassis fpc 0 pic 0 port 0 speed 100g
+set chassis fpc 0 pic 0 port 7 speed 100g
+set chassis fpc 0 pic 1 port 0 speed 100g
+set chassis fpc 0 pic 1 port 7 speed 100g
+set system commit synchronize
+set system switchover-on-routing-crash
+set chassis redundancy routing-engine 0 master
+set chassis redundancy routing-engine 1 backup
+set chassis redundancy graceful-switchover
+set chassis redundancy failover on-loss-of-keepalives
+set chassis redundancy failover on-disk-failure
+set routing-options nonstop-routing
+delete system services web-management
+delete system services telnet
+delete system services ftp
+delete set system services ssh protocol-version v1
+set system no-redirects
+set system no-ping-record-route
+set system no-ping-time-stamp
+set system internet-options icmpv4-rate-limit packet-rate 50
+set system internet-options icmpv6-rate-limit packet-rate 50
+set system internet-options no-ipip-path-mtu-discovery
+set system internet-options no-source-quench
+set system internet-options tcp-drop-synfin-set
+set system internet-options no-ipv6-path-mtu-discovery
+set system internet-options no-tcp-reset drop-all-tcp
+set system syslog user * change-log any
+set system syslog user * any emergency
+set system syslog user * daemon alert
+set system syslog user * daemon critical
+set system syslog host 172.18.0.2 any any
+set system syslog file account-actions change-log any
+set system syslog host 172.18.0.2 any any
+set system syslog host 172.18.0.2 source-address {{loopback}}
+set system syslog host 172.18.0.2 log-prefix {{host_name}}
+set system syslog file messages any info
+set system syslog file messages authorization none
+set system syslog file messages interactive-commands none
+set system syslog file messages daemon none
+set system syslog file User-Auth authorization any
+set system syslog file interactive-commands interactive-commands any
+set system syslog file processes daemon any
+set system syslog file account-actions change-log any any
+set system syslog console any any
+set system syslog archive size 100k
+set system syslog archive files 3
+set system syslog host 172.17.74.25 any notice
+set system syslog host 172.17.74.25 structured-data
+set system syslog host 172.17.74.27 any any
+set system syslog host 172.17.74.27 port 514
+set system syslog host 172.17.74.27 structured-data
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file messages pfe any
+set system syslog source-address {{loopback}}
+set file account-actions match “system login user”
+set system login retry-options tries-before-disconnect 3
+set system login retry-options backoff-threshold 1
+set system login retry-options backoff-factor 10
+set system login retry-options lockout-period 15
+set system login idle-timeout 15
+set system login class ENG-CLASS idle-timeout 15
+set system login class ENG-CLASS permissions all
+set system login class RO-CLASS idle-timeout 20
+set system login class RO-CLASS permissions configure
+set system login class RO-CLASS permissions interface
+set system login class RO-CLASS permissions network
+set system login class RO-CLASS permissions routing
+set system login class RO-CLASS permissions view
+set system login class RO-CLASS permissions view-configuration
+set system login class RO-CLASS deny-commands request
+set system login class RO-CLASS confirm-commands show
+set system login class RO-CLASS confirm-commands ssh
+set system login class RO-CLASS confirm-commands file list
+set system login class RO-CLASS confirm-commands configure
+set system login class Rhands allow-commands "(ping .*)|(traceroute .*)|(show .*)|(configure .*)|(edit .*)|(exit)|(commit)|(rollback .*)"
+set system login class Rhands deny-configuration "(system login class)|(system services)"
+set system login user Rhands uid 2001
+set system login user Rhands class Rhands
+set system login user Rhands authentication encrypted-password "$6$B/aoKo9v$4gF7aHatG8YoBf87J1gdeTbcr0C2R/rsn31gCE/PJS2raGYpVvoq83ZNA83WZzVwXgNrJ.IP73K2DGoSURx8z."
+set system login user coveeng uid 2003
+set system login user coveeng class ENG-CLASS
+set system login user covro uid 2004
+set system login user covro class RO-CLASS
+set system login message "WARNING: This is a private system. Unauthorized access is strictly prohibited. All configurations and settings contained within this system are the proprietary property of Visionary Solutions, LLC and may not be disclosed or modified without explicit authorization. By accessing this system, you acknowledge and consent to active monitoring, auditing, and security testing. Any unauthorized access or disclosure of proprietary configurations may result in leg:al action."
+set system services netconf ssh
+set system services ssh no-tcp-forwarding
+set system services ssh authentication-order tacplus
+set system services ssh root-login deny
+set system services ssh protocol-version v2
+set system services ssh max-sessions-per-connection 5
+set system services ssh sftp-server
+set system services ssh ciphers aes256-ctr
+set system services ssh ciphers aes256-cbc
+set system services ssh ciphers aes192-ctr
+set system services ssh ciphers aes192-cbc
+set system services ssh ciphers aes128-ctr
+set system services ssh ciphers aes128-cbc
+set system services ssh macs hmac-sha2-512
+set system services ssh macs hmac-sha2-256
+set system services ssh macs hmac-sha1
+set system services ssh macs hmac-sha1-96
+set system services ssh key-exchange dh-group14-sha1
+set system services ssh key-exchange group-exchange-sha2
+set system services ssh key-exchange ecdh-sha2-nistp256
+set system services ssh key-exchange ecdh-sha2-nistp384
+set system services ssh key-exchange ecdh-sha2-nistp521
+set system services ssh client-alive-count-max 5
+set system services ssh client-alive-interval 400
+set system authentication-order tacplus
+set system ports console authentication-order tacplus
+set system ports console log-out-on-disconnect
+set system tacplus-server 172.18.0.67 secret {{Tacacs_Password}}
+set system tacplus-server 172.18.0.67 timeout 7
+set system tacplus-server 172.18.0.67 single-connection
+set system tacplus-server 172.18.0.67 source-address {{loopback}}
+set system tacplus-server 172.18.0.66 secret {{Tacacs_Password}}
+set system tacplus-server 172.18.0.66 timeout 7
+set system tacplus-server 172.18.0.66 single-connection
+set system tacplus-server 172.18.0.66 source-address {{loopback}}
+set system accounting events interactive-commands
+set system accounting destination tacplus server 172.18.0.66 secret {{Tacacs_Password}}
+set system accounting destination tacplus server 172.18.0.66 timeout 7
+set system accounting destination tacplus server 172.18.0.66 single-connection
+set system accounting destination tacplus server 172.18.0.66 source-address {{loopback}}
+set system accounting destination tacplus server 172.18.0.67 secret {{Tacacs_Password}}
+set system accounting destination tacplus server 172.18.0.67 timeout 7
+set system accounting destination tacplus server 172.18.0.67 single-connection
+set system accounting destination tacplus server 172.18.0.67 source-address {{loopback}}
+set system ntp server 172.18.0.130 prefer
+set system ntp source-address {{loopback}}
+set interfaces et-0/0/7 description "description of physical port of WAN-SEC switch"
+set interfaces et-0/0/7 gigether-options 802.3ad ae1
+set interfaces et-0/1/7 description "description of physical port of WAN-SEC switch"
+set interfaces et-0/1/7 gigether-options 802.3ad ae1
+set interfaces ae1 description "description to aggregate port of WAN-SEC switch"
+set interfaces ae1 vlan-tagging
+set interfaces ae1 mtu 9000
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 encapsulation flexible-ethernet-services
+set interfaces ae1 unit {{MCPE}} description "MCPE VLAN"
+set interfaces ae1 unit {{MCPE}} encapsulation vlan-bridge
+set interfaces ae1 unit {{MCPE}} vlan-id {{MCPE}} 
+set interfaces ae1 unit {{MCPE}} family bridge 
+set interfaces irb.{{MCPE}} description "Site Management Subnet Gateway"
+set interfaces irb.{{MCPE}} family inet address {{MCPE_Gateway}}/24
+set bridge-domains {{MCPE}} description "Site Managment BD"
+set bridge-domains {{MCPE}} vlan-id {{MCPE}} routing-interface irb.{{MCPE}}
+set interfaces ae1 unit {{VTX_MGMT}} description "Vortex POP MGMT"
+set interfaces ae1 unit {{VTX_MGMT}} encapsulation vlan-bridge
+set interfaces ae1 unit {{VTX_MGMT}} vlan-id {{VTX_MGMT}}
+set interfaces ae1 unit {{VTX_MGMT}} family bridge
+set interfaces irb.{{VTX_MGMT}} description "Site Management Subnet Gateway"
+set interfaces irb.{{VTX_MGMT}} family inet address {{Local_Vortex_MGNT_IP}}/28
+set bridge-domains {{VTX_MGMT}} description "Site Managment BD"
+set bridge-domains {{VTX_MGMT}} vlan-id {{VTX_MGMT}} routing-interface irb.{{VTX_MGMT}}
+set interfaces fxp0 unit 0 description OOB-MGMT
+set interfaces fxp0 unit 0 family inet address {{fxp0_Mgnt_IP}}/28
+set interfaces lo0 unit 0 family inet address {{loopback}}/32
+set interfaces lo0 unit 0 family iso address {{isis_NSAP}}
+set interfaces lo0 unit 0 family mpls
+set snmp location NETWORK=VORTEX
+set snmp v3 usm local-engine user VORTEX authentication-sha authentication-key "Standard Key"
+set snmp v3 usm local-engine user VORTEX privacy-aes128 privacy-key "Standard Key"
+set snmp v3 vacm security-to-group security-model usm security-name VORTEX group VORTEX_RGP
+set snmp v3 vacm access group VORTEX_RGP default-context-prefix security-model usm security-level privacy read-view SSV-ISO
+set snmp view SSV-ISO oid iso include
+set snmp traceoptions file SNMP
+set snmp traceoptions flag all
+set routing-instances mgmt_junos description OOB-MGMT
+set routing-instances mgmt_junos routing-options static route 0.0.0.0/0 next-hop {{OOB_GW}}
+set protocols bgp group VORTEX type internal
+set protocols bgp group VORTEX local-address {{loopback}}
+set protocols bgp group VORTEX family inet-vpn unicast
+set protocols bgp group VORTEX family evpn signaling
+set protocols bgp group VORTEX authentication-key "Standard Key"
+set protocols isis interface ae1.{{MCPE}} passive
+set protocols isis interfaces irb.{{VTX_MGMT}} passive
+set protocols isis interface lo0.0 passive
+set protocols isis source-packet-routing node-segment ipv4-index {{Segment_Index}}
+set protocols isis source-packet-routing srgb index-range 8000
+set protocols isis source-packet-routing srgb start-label 16000
+set protocols isis level 1 disable
+set protocols isis level 2 authentication-key "Standard Key"
+set protocols isis level 2 authentication-type md5
+set protocols isis level 2 wide-metrics-only
+set protocols isis reference-bandwidth 1000g
+set protocols mpls interface lo0.0
+set protocols lldp management-address {{loopback}}
+set protocols lldp interface et-0/0/7.0
+set protocols lldp interface et-0/1/7.0
+set routing-options route-distinguisher-id {{loopback}}
+set routing-options router-id {{loopback}}
+set routing-options autonomous-system 65000
+set routing-options nonstop-routing
+set policy-options policy-statement BGP-DIRECT term A from protocol direct
+set policy-options policy-statement BGP-DIRECT term A then accept
+set policy-options policy-statement BGP-DIRECT term B then reject
+set policy-options policy-statement PLCY-SPK-OUT term 1 then community add CMTY-3093
+set policy-options policy-statement PLCY-SPK-OUT term 1 then community add CMTY-3094
+set policy-options policy-statement PLCY-SPK-OUT term 1 then accept
+set policy-options policy-statement PLCY-SPK-OUT term 2 then reject
+set policy-options policy-statement PLCY-HUB-IN term 1 from community [ CMTY-3097 CMTY-3098 ]
+set policy-options policy-statement PLCY-HUB-IN term 1 then accept
+set policy-options policy-statement PLCY-HUB-IN term 2 then reject
+set policy-options community CMTY-3093 members target:65000:3093
+set policy-options community CMTY-3094 members target:65000:3094
+set policy-options community CMTY-3097 members target:65000:3097
+set policy-options community CMTY-3098 members target:65000:3098
+set routing-instances mCPE instance-type vrf description "mCPE Route Instance"
+set routing-instances mCPE protocols bgp group mCPE type external
+set routing-instances mCPE protocols bgp group mCPE log-updown
+set routing-instances mCPE protocols bgp group mCPE family inet unicast
+set routing-instances mCPE protocols bgp group mCPE description "mCPE Domain" export BGP-DIRECT authentication-key {{BGP_MCPE_Password}}
+set routing-instances mCPE interface irb.{{MCPE}}
+set routing-instances mCPE route-distinguisher {{loopback}}:{{MCPE}}
+set routing-instances mCPE vrf-import PLCY-HUB-IN
+set routing-instances mCPE vrf-export PLCY-SPK-OUT
+set routing-instances mCPE vrf-table-label

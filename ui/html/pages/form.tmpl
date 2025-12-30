@@ -1,0 +1,23 @@
+{{define "title"}}Form{{end}}
+{{define "main"}}
+    <div class="container">
+        <h1>{{.Name}} Configuration</h1>
+        <form id="configForm" method="post" action="/v1/generate" novalidate>
+            <input type="hidden" name="config_type" value="{{.Name}}">
+            {{range .Fields}}
+                <div class="form-field">
+                    <label for="{{.Name}}">{{.Name}}</label>
+                    <input 
+                        type="text" 
+                        id="{{.Name}}" 
+                        name="{{.Name}}" 
+                        {{if .Pattern}}pattern="{{.Pattern | html}}"{{end}}  
+                        required>
+                    <div class="field-description">{{.Description}}</div>
+                </div>
+            {{end}}
+            <button type="submit" disabled>Generate</button>
+        </form>
+    </div>
+    <script src="/static/js/formValidation.js"></script>
+{{end}}

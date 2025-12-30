@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #1e1e2f;
+    color: #e0e0e0;  
+    line-height: 1.6;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: #4dabf7;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+ul li {
+    background: #2c2c3a;
+    margin: 0.5rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+ul li:hover {
+    background: #3a3a4f;
+}
+
+form {
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: bold;
+    text-align: left;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background: #1e1e2f;
+    color: #e0e0e0;
+    transition: border 0.2s ease;
+}
+input[type="text"]:focus {
+    outline: none;
+    border: 1px solid #4dabf7;
+}
+
+button,
+.download-btn {
+    padding: 0.8rem 1.6rem;
+    background: #4dabf7;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+button:hover,
+.download-btn:hover {
+    background: #339af0;
+    transform: translateY(-2px);
+}
+
+.config-box {
+    background: #2c2c3a;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.config-box pre {
+    color: #00e676; 
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: "Fira Code", monospace;
+    font-size: 0.95rem;
+}
+
+.form-field {
+    text-align: left;
+}
+
+#configForm button {
+    margin-top: 1.5rem;
+}
+
+.form-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.field-description {
+    font-size: 0.85rem;
+    color: #9aa0ac;
+    font-style: italic;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+input.invalid { border: 2px solid red; }
+input.valid   { border: 2px solid green; }
+button:disabled { background: #888; cursor: not-allowed; }
