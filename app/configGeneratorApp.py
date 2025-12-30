@@ -32,22 +32,7 @@ def listTemplates():
     templates = []
     for file in os.listdir("templates"):
         if file.endswith(".j2"):
-            file_path = os.path.join("templates", file)
-            with open(file_path, "r", encoding="utf-8") as f:
-                source = f.read()
-
-            raw_fields = re.findall(r"{{\s*(\w+)\s*}}", source)
-            seen = set()
-            fields = []
-            for fld in raw_fields:
-                if fld not in seen:
-                    seen.add(fld)
-                    fields.append(fld)
-
-            templates.append({
-                "name": file.replace(".j2", ""),
-                "fields": fields
-            })
+            templates.append({"name":(file.replace(".j2", ""))})
     return {"templates": templates}
 
 @app.post("/v1/getTemplate")

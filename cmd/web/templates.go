@@ -11,8 +11,7 @@ type TemplateResponse struct {
 }
 
 type Template struct {
-	Name   string   `json:"name"`
-	Fields []string `json:"fields"`
+	Name string `json:"name"`
 }
 
 type TemplateDetail struct {
