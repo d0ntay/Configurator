@@ -1,2 +1,2 @@
-/app/templates/
-/app/__pycache__/
+/app/templates/*
+/app/__pycache__/*
