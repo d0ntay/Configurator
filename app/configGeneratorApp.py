@@ -14,7 +14,11 @@ class renderRequest(BaseModel):
     config_type: str
     data: dict
 
-@app.post("/v1/render")
+@app.get("/v1/health")
+def healthCheckHandler():
+    return {"status":"ok"}
+
+@app.post("/v1/render") 
 def renderConfig(request: renderRequest):
     templateName = f"{request.config_type}.j2"
     template = env.get_template(templateName)
